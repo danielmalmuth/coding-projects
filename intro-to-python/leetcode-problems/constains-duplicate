@@ -11,6 +11,6 @@ class Solution(object):
         return False
     
 
-solution = Solution()
-result = solution.containsDuplicate([1,2,3,1])
-print(result)
+solution = Solution() # Create an object of the Solution class
+result = solution.containsDuplicate([1,2,3,1]) # Assign the result to a variable
+print(result) # Print result
