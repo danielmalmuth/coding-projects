@@ -1,0 +1,110 @@
+#%%
+import random
+import matplotlib.pyplot as plt
+import statistics
+
+# Populate a matrix with numbers corresponding to a Bingo board: 1-15 to B, 16-30 for I, etc.
+def create_bingo_matrix():
+    matrix = [[0] * 5 for _ in range(5)]  # Create a 5x5 matrix filled with zeros
+
+    # Generate the lists of unique numbers for each column
+    column_ranges = [
+        list(range(1, 16)),
+        list(range(16, 31)),
+        list(range(31, 46)),
+        list(range(46, 61)),
+        list(range(61, 76))
+    ]
+
+    # Populate the matrix while ensuring non-repeated elements
+    for col in range(5):
+        column = column_ranges[col]
+        random.shuffle(column)  # Randomize the order of the numbers
+
+        # Place the numbers in the matrix
+        for row in range(5):
+            if row == 2 and col == 2:
+                matrix[row][col] = 0  # Set the third row, third column element to 0
+            else:
+                matrix[row][col] = column[row]
+
+    return matrix
+    
+def play_bingo_game(matrix):
+    numbers = list(range(1, 76))  # Generate a list of numbers from 1 to 75
+    random.shuffle(numbers)  # Shuffle the list of numbers
+    number_of_turns = 0  # Initialize number of turns variable
+    
+    matrix[2][2] = 'X'  # Mark free space
+
+    for number in numbers:
+        # Iterate through the matrix to check if the number exists
+        for row in range(5):
+            for col in range(5):
+                if matrix[row][col] == number:
+                    # Update the matrix to indicate the number has been chosen
+                    matrix[row][col] = 'X'  # Replace with 'X' or any other marker
+
+        number_of_turns += 1
+
+        # Check if a Bingo pattern has been formed
+        if check_bingo(matrix):
+            # print("Bingo! It took", number_of_turns, "tries.") # Used for checking individual simulations/debugging
+            return number_of_turns
+
+    return number_of_turns  # Return the number of turns
+
+
+
+def check_bingo(matrix):
+    # Check rows for a Bingo pattern
+    for row in range(5):
+        if all(element == 'X' for element in matrix[row]):
+            return True
+
+    # Check columns for a Bingo pattern
+    for col in range(5):
+        if all(matrix[row][col] == 'X' for row in range(5)):
+            return True
+
+    # Check diagonals for a Bingo pattern
+    if all(matrix[i][i] == 'X' for i in range(5)) or all(matrix[i][4-i] == 'X' for i in range(5)):
+        return True
+
+    return False
+    
+def simulate_bingo_games(num_simulations):
+    turns_list = []  # List to store the number of turns for each simulation
+
+    for _ in range(num_simulations):
+        matrix = create_bingo_matrix()  # Create a new bingo matrix for each simulation
+        number_of_turns = play_bingo_game(matrix)  # Play the game and get the number of turns
+
+        turns_list.append(number_of_turns)  # Store the number of turns in the list
+
+    average_turns = statistics.mean(turns_list)  # Calculate the average number of turns
+    print("Average number of turns:", average_turns)
+
+    # Plotting the histogram
+    plt.figure()
+    plt.hist(turns_list, bins=range(min(turns_list), max(turns_list) + 2), align='left', rwidth=0.8)
+    plt.xlabel('Number of Turns')
+    plt.ylabel('Frequency')
+    plt.title('Number of Turns in Bingo Simulation')
+    plt.xticks(range(min(turns_list), max(turns_list) + 1, 2), fontsize=8)
+    plt.show()
+
+    # Running a 5 number summary
+    print("Five Number Summary:")
+    print("Minimum:", min(turns_list))
+    print("First Quartile:", statistics.quantiles(turns_list, n=4)[0])
+    print("Median:", statistics.median(turns_list))
+    print("Third Quartile:", statistics.quantiles(turns_list, n=4)[2])
+    print("Maximum:", max(turns_list))
+    print("Standard Deviation:", statistics.stdev(turns_list))
+
+# Run a given amount of simulations
+num_simulations = 10000
+simulate_bingo_games(num_simulations)
+
+# %%

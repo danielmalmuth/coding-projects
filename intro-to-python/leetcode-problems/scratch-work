@@ -1,0 +1,27 @@
+nums = [1,7,3,6,5,6]
+totalSum = sum(nums) # Sum of array
+
+'''
+Perform running sums to then compare to totalSum
+''' 
+
+running_sums = [None] * len(nums) # Initialize empty running sums array
+running_sums[0] = nums[0] # Set first value as equal to the first value of the array
+
+for i, num in enumerate(nums[1:], start=1):
+    running_sums[i] = running_sums[i-1] + num
+
+'''
+Check to see if running sums is ever half of totalSum
+'''
+
+print(running_sums)
+print(totalSum)
+
+'''
+for num in range(len(running_sums)):
+    if running_sums[num-1] == (totalSum-num) / 2:
+        print(num)
+
+print(-1)
+'''

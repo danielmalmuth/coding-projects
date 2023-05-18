@@ -1,0 +1,13 @@
+class Solution(object):
+    def runningSum(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        running_sums = [None] * len(nums) # Initialize empty running sums array
+        running_sums[0] = nums[0] # Set first value as equal to the first value of the array
+
+        for i, num in enumerate(nums[1:], start=1):
+            running_sums[i] = running_sums[i-1] + num
+
+        return running_sums
